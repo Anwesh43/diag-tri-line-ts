@@ -215,3 +215,25 @@ class DiagTriLine {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    dtl : DiagTriLine = new DiagTriLine()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.dtl.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.dtl.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.dtl.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
