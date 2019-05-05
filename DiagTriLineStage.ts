@@ -32,3 +32,42 @@ class ScaleUtil {
         return ScaleUtil.mirrorValue(scale, a, b) * dir * scGap
     }
 }
+
+class DrawingUtil {
+
+    static drawLine(context : CanvasRenderingContext2D, x1 : number,  y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
+
+    static drawDiagLine(context : CanvasRenderingContext2D, i : number, sc : number, size : number) {
+        const sci : number = ScaleUtil.divideScale(sc, i, lines)
+        const x : number = -size * (1 - i)
+        const y : number = -size * i
+        const midX : number = -size / 2
+        const midY : number = -size / 2
+        const tx : number = x + (midX - x) * sci
+        const ty : number = y + (midY - y) * sci
+        DrawingUtil.drawLine(context, 0, 0, x, y)
+        DrawingUtil.drawLine(context, x, y, tx, ty)
+    }
+
+    static drawDTLNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        const gap : number = w / (nodes + 1)
+        const size : number = gap / sizeFactor
+        context.strokeStyle = foreColor
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor
+        const sc1 : number = ScaleUtil.divideScale(scale, 0, 2)
+        const sc2 : number = ScaleUtil.divideScale(scale, 1, 2)
+        context.save()
+        context.translate(gap * (i + 1), h / 2)
+        context.rotate(Math.PI / 2 * sc2)
+        for (var j = 0; j < lines; j++) {
+            DrawingUtil.drawDiagLine(context, j, sc1, size)
+        }
+        context.restore()
+    }
+}
