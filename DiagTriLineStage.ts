@@ -146,3 +146,48 @@ class Animator {
         }
     }
 }
+
+class DTLNode {
+
+    prev : DTLNode
+    next : DTLNode
+    state : State = new State()
+
+    constructor(private i : number) {
+
+    }
+
+    addNeighbor() {
+        if (this.i < nodes - 1) {
+            this.next = new DTLNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        DrawingUtil.drawDTLNode(context, this.i, this.state.scale)
+        if (this.next) {
+            this.next.draw(context)
+        }
+    }
+
+    update(cb : Function) {
+        this.state.update(cb)
+    }
+
+    startUpdating(cb : Function) {
+        this.state.startUpdating(cb)
+    }
+
+    getNext(dir : number, cb : Function) : DTLNode {
+        var curr : DTLNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this 
+    }
+}
